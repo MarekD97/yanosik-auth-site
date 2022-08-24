@@ -1,0 +1,58 @@
+<form
+  class="form"
+  [formGroup]="registerForm"
+  (ngSubmit)="register(registerForm)"
+>
+  <h1 class="form__title">{{ title }}</h1>
+  <label class="form__label" for="emailInput"> {{ emailLabel }}</label>
+  <input
+    class="form__input"
+    type="email"
+    name="email"
+    id="emailInput"
+    formControlName="email"
+  />
+  <label class="form__label" for="passwordInput">{{ passwordLabel }}</label>
+  <input
+    class="form__input"
+    type="password"
+    name="password"
+    id="passwordInput"
+    formControlName="password"
+  />
+  <label class="form__label" for="confirmPasswordInput">{{
+    confirmPasswordLabel
+  }}</label>
+  <input
+    class="form__input"
+    type="password"
+    name="confirmPassword"
+    id="confirmPasswordInput"
+    formControlName="confirmPassword"
+  />
+  <div class="form__rules">
+    <div class="form__rule">
+      <input
+        class="form__checkbox"
+        type="checkbox"
+        name="all"
+        id="allCheckbox"
+        [checked]="checkedAll"
+        (change)="checkAll($event)"
+      />
+      Akceptuję wszystkie zgody
+    </div>
+    <div *ngFor="let rule of ruleList" class="form__rule">
+      <input
+        class="form__checkbox"
+        type="checkbox"
+        [name]="rule.name"
+        id="{{ rule.name }}Checkbox"
+        [checked]="rule.checked"
+        (change)="checkOne($event)"
+      />
+      <span *ngIf="rule.required">*</span>{{ rule.label }}
+    </div>
+  </div>
+  <input class="form__submit" type="submit" value="{{ registerButtonLabel }}" />
+</form>
