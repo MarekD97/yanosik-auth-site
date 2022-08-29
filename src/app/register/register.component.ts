@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SimpleChanges } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -8,6 +8,8 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { catchError } from 'rxjs';
+import { AuthService } from '../service/auth.service';
 
 interface CheckboxItem {
   name: string;
@@ -23,13 +25,25 @@ interface CheckboxItem {
 })
 export class RegisterComponent implements OnInit {
   title: string = 'Rejestracja';
-  registerButtonLabel: string = 'Zarejestruj';
-  emailLabel: string = 'Email';
-  passwordLabel: string = 'Hasło';
-  confirmPasswordLabel: string = 'Powtórz hasło';
+  labels = {
+    registerButton: 'Zarejestruj',
+    email: 'Email',
+    password: 'Hasło',
+    confirmPassword: 'Powtórz hasło',
+    acceptAllRules: 'Akceptuję wszystkie zgody',
+    errorEmailRequired: 'Podaj adres email',
+    errorEmailIncorrect: 'Podaj poprawny adres email',
+    errorPasswordRequired: 'Podaj hasło',
+    errorPasswordLength:
+      'Hasło jest za krótkie, powinno zawierać min. 6 znaków',
+    errorConfirmPassword: 'Hasło niepoprawne',
+    errorRules: 'Zaznacz wszystkie wymagane pola',
+  };
+
   checkedAll: boolean = false;
 
   registerForm: FormGroup;
+  submitted: boolean = false;
 
   ruleList: CheckboxItem[] = [
     {
@@ -53,7 +67,7 @@ export class RegisterComponent implements OnInit {
     },
   ];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private authService: AuthService) {
     this.registerForm = this.fb.group(
       {
         email: new FormControl('', [Validators.required, Validators.email]),
@@ -62,6 +76,15 @@ export class RegisterComponent implements OnInit {
           Validators.minLength(6),
         ]),
         confirmPassword: new FormControl('', Validators.required),
+        regulations: new FormControl(
+          this.ruleList[0].checked,
+          Validators.requiredTrue
+        ),
+        privacyPolicy: new FormControl(
+          this.ruleList[1].checked,
+          Validators.requiredTrue
+        ),
+        marketingPurposes: new FormControl(this.ruleList[2].checked),
       },
       { validators: this.passwordMatchingValidatior }
     );
@@ -83,9 +106,12 @@ export class RegisterComponent implements OnInit {
   checkAll(event: any) {
     const newValue = event.target.checked;
     this.checkedAll = newValue;
-    for (let rule of this.ruleList) {
-      rule.checked = newValue;
+    for (let i = 0; i < this.ruleList.length; i++) {
+      this.ruleList[i].checked = newValue;
     }
+    this.registerForm.get('regulations')?.setValue(newValue);
+    this.registerForm.get('privacyPolicy')?.setValue(newValue);
+    this.registerForm.get('marketingPurposes')?.setValue(newValue);
   }
 
   checkOne(event: any) {
@@ -97,11 +123,30 @@ export class RegisterComponent implements OnInit {
     this.ruleList[index].checked = newValue;
   }
 
-  register(form: FormGroup) {
+  allRequiredRulesChecked() {
+    this.ruleList.every((rule) => {
+      if (rule.required) {
+        return rule.checked;
+      }
+      return true;
+    });
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    console.log(this.registerForm);
     try {
-      if (!form.valid) {
+      if (!this.registerForm.valid) {
         throw new Error('Nieprawidłowe dane w formularzu');
       }
-    } catch (error) {}
+      this.authService.register(this.registerForm.value).subscribe({
+        next: (data) => {
+          window.alert('Wysłano');
+        },
+        error: (error) => window.alert('Wystąpił błąd'),
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

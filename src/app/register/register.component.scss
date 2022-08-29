@@ -1,49 +1,57 @@
 .form {
-    display: flex;
-    flex-direction: column;
-    font-size: 1.25rem;
-    margin: 2em;
-    padding: 1em 0;
-    max-width: 32em;
+  display: flex;
+  flex-direction: column;
+  font-size: 1.25rem;
+  margin: 2em;
+  padding: 1em 0;
+  max-width: 32em;
 
-    @media screen and (min-width: 768px){
-        margin: 2em auto;
-    }
+  @media screen and (min-width: 768px) {
+    margin: 2em auto;
+  }
 
-    &__title {
-        font-size: 1.5rem;
+  &__title {
+    font-size: 1.5rem;
+  }
+  &__label {
+    font-size: 1rem;
+    margin-top: 1em;
+  }
+  &__input {
+    font-size: 1rem;
+    padding: 0.3em 1em;
+    border: 1px solid var(--dark-color);
+    border-radius: 0.25em;
+    max-width: 36em;
+  }
+  &__submit {
+    margin-top: 2em;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--light-color);
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 0.25em;
+    padding: 0.4em 1em;
+    cursor: pointer;
+    max-width: 36em;
+  }
+  &__rules {
+    margin-top: 1em;
+    font-size: 0.875rem;
+    position: relative;
+    span {
+      position: absolute;
+      left: 1.25em;
+      color: var(--primary-color);
     }
-    &__label {
-        font-size: 1rem;
-        margin-top: 1em;
-    }
-    &__input {
-        font-size: 1rem;
-        padding: 0.3em 1em;
-        border: 1px solid var(--dark-color);
-        border-radius: 0.25em;
-        max-width: 36em;
-    }
-    &__submit {
-        margin-top: 2em;
-        font-size: 1rem;
-        font-weight: 600;
-        color: var(--light-color);
-        background-color: var(--primary-color);
-        border: none;
-        border-radius: 0.25em;
-        padding: 0.4em 1em;
-        cursor: pointer;
-        max-width: 36em;
-    }
-    &__rules {
-        margin-top: 1em;
-        span {
-            color: var(--primary-color);
-            margin-right: 0.25em;
-        }
-    }
-    &__checkbox {
-        margin-right: 1em;
-    }
+  }
+  &__checkbox {
+    margin-right: 1em;
+  }
+}
+
+.error {
+  color: red;
+  font-size: 0.75rem;
 }

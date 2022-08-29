@@ -1,13 +1,44 @@
-<form class="form">
+<form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
   <h1 class="form__title">{{ title }}</h1>
-  <label class="form__label" for="emailInput"> {{ emailLabel }}</label>
-  <input class="form__input" type="email" name="email" id="emailInput" />
-  <label class="form__label" for="passwordInput">{{ passwordLabel }}</label>
+  <label class="form__label" for="emailInput">{{ labels.email }}</label>
+  <input
+    class="form__input"
+    type="email"
+    name="email"
+    id="emailInput"
+    formControlName="email"
+  />
+  <span
+    *ngIf="submitted && loginForm.get('email')?.hasError('required')"
+    class="error"
+  >
+    {{ labels.errorEmailRequired }}
+  </span>
+  <span
+    *ngIf="submitted && loginForm.get('email')?.hasError('email')"
+    class="error"
+  >
+    {{ labels.errorEmailIncorrect }}
+  </span>
+  <label class="form__label" for="passwordInput">{{ labels.password }}</label>
   <input
     class="form__input"
     type="password"
     name="password"
     id="passwordInput"
+    formControlName="password"
   />
-  <input class="form__submit" type="submit" value="{{ loginButtonLabel }}" />
+  <span
+    *ngIf="submitted && loginForm.get('password')?.hasError('required')"
+    class="error"
+  >
+    {{ labels.errorPasswordRequired }}
+  </span>
+  <span
+    *ngIf="submitted && loginForm.get('password')?.hasError('minlength')"
+    class="error"
+  >
+    {{ labels.errorPasswordLength }}
+  </span>
+  <input class="form__submit" type="submit" [value]="labels.login" />
 </form>

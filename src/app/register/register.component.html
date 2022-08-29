@@ -1,10 +1,6 @@
-<form
-  class="form"
-  [formGroup]="registerForm"
-  (ngSubmit)="register(registerForm)"
->
+<form class="form" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
   <h1 class="form__title">{{ title }}</h1>
-  <label class="form__label" for="emailInput"> {{ emailLabel }}</label>
+  <label class="form__label" for="emailInput"> {{ labels.email }}</label>
   <input
     class="form__input"
     type="email"
@@ -12,7 +8,19 @@
     id="emailInput"
     formControlName="email"
   />
-  <label class="form__label" for="passwordInput">{{ passwordLabel }}</label>
+  <span
+    *ngIf="submitted && registerForm.get('email')?.hasError('required')"
+    class="error"
+  >
+    {{ labels.errorEmailRequired }}
+  </span>
+  <span
+    *ngIf="submitted && registerForm.get('email')?.hasError('email')"
+    class="error"
+  >
+    {{ labels.errorEmailIncorrect }}
+  </span>
+  <label class="form__label" for="passwordInput">{{ labels.password }}</label>
   <input
     class="form__input"
     type="password"
@@ -20,9 +28,21 @@
     id="passwordInput"
     formControlName="password"
   />
-  <label class="form__label" for="confirmPasswordInput">{{
-    confirmPasswordLabel
-  }}</label>
+  <span
+    *ngIf="submitted && registerForm.get('password')?.hasError('required')"
+    class="error"
+  >
+    {{ labels.errorPasswordRequired }}
+  </span>
+  <span
+    *ngIf="submitted && registerForm.get('password')?.hasError('minlength')"
+    class="error"
+  >
+    {{ labels.errorPasswordLength }}
+  </span>
+  <label class="form__label" for="confirmPasswordInput">
+    {{ labels.confirmPassword }}
+  </label>
   <input
     class="form__input"
     type="password"
@@ -30,6 +50,12 @@
     id="confirmPasswordInput"
     formControlName="confirmPassword"
   />
+  <span
+    *ngIf="submitted && registerForm.errors?.['notmatched'] && (registerForm.touched || registerForm.dirty)"
+    class="error"
+  >
+    {{ labels.errorConfirmPassword }}
+  </span>
   <div class="form__rules">
     <div class="form__rule">
       <input
@@ -40,7 +66,7 @@
         [checked]="checkedAll"
         (change)="checkAll($event)"
       />
-      Akceptuję wszystkie zgody
+      {{ labels.acceptAllRules }}
     </div>
     <div *ngFor="let rule of ruleList" class="form__rule">
       <input
@@ -50,9 +76,16 @@
         id="{{ rule.name }}Checkbox"
         [checked]="rule.checked"
         (change)="checkOne($event)"
+        value="{{ rule.checked }}"
+        [formControlName]="rule.name"
       />
-      <span *ngIf="rule.required">*</span>{{ rule.label }}
+      <span *ngIf="rule.required">*</span>
+      {{ rule.label }}
     </div>
   </div>
-  <input class="form__submit" type="submit" value="{{ registerButtonLabel }}" />
+  <input
+    class="form__submit"
+    type="submit"
+    value="{{ labels.registerButton }}"
+  />
 </form>
